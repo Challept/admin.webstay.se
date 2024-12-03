@@ -142,27 +142,31 @@
         }
 
 .dashboard {
-    margin-left: 60px;
+    margin-left: 60px; /* Justera beroende på sidobaren */
     padding: 20px;
-    background: rgba(255, 255, 255, 0.9);
+    flex: 1;
+    background: linear-gradient(135deg, #e0f7fa, #ffffff);
     border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     color: #333;
+    overflow-y: auto; /* Skrollning */
+    height: 100vh;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     animation: fadeIn 0.5s ease;
 }
 
 .dashboard-header {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
 .dashboard-header h1 {
     font-size: 2rem;
-    color: #4a90e2;
+    margin-bottom: 10px;
+    color: #007bff;
 }
 
 .dashboard-header p {
-    font-size: 1rem;
+    font-size: 1.2rem;
     color: #555;
 }
 
@@ -170,19 +174,19 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    gap: 15px;
+    gap: 20px;
 }
 
 .stat-card {
-    flex: 1 1 calc(50% - 15px);
-    background: linear-gradient(135deg, #4a90e2, #6a11cb);
-    color: white;
+    flex: 1 1 calc(33% - 20px); /* Tre kolumner */
+    background: linear-gradient(135deg, #ffffff, #e3f2fd);
+    color: #007bff;
     text-align: center;
     padding: 20px;
-    border-radius: 10px;
+    border-radius: 15px;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    position: relative;
+    min-height: 200px; /* För att inkludera diagrammet */
 }
 
 .stat-card:hover {
@@ -191,31 +195,19 @@
 }
 
 .stat-card h2 {
-    font-size: 1.2rem;
-    margin-bottom: 5px;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
 }
 
 .stat-card p {
-    font-size: 1rem;
+    font-size: 1.2rem;
     font-weight: bold;
-    margin: 0;
+    margin: 10px 0;
 }
 
-.stat-card canvas {
-    max-width: 100%;
-    height: 150px;
-    margin-top: 15px;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+canvas {
+    margin-top: 10px;
+    max-height: 100px;
 }
         .login-popup-content button:hover { background-color: #357abd; }
     </style>
@@ -232,10 +224,15 @@
 
 <div class="dashboard">
     <div class="dashboard-header">
-        <h1>Dashboard</h1>
-        <p>En snabb översikt över din butik.</p>
+        <h1>Välkommen till din Dashboard</h1>
+        <p>Snabb översikt över din butik.</p>
     </div>
     <div class="stats-container">
+        <div class="stat-card">
+            <h2>Produkter Sålda</h2>
+            <p id="productsSold">450</p>
+            <canvas id="productsChart"></canvas>
+        </div>
         <div class="stat-card">
             <h2>Totalt Sålt</h2>
             <p id="totalSales">15,450 kr</p>
@@ -246,19 +243,9 @@
             <p id="totalVisitors">1,245</p>
             <canvas id="visitorsChart"></canvas>
         </div>
-        <div class="stat-card">
-            <h2>Beställningar</h2>
-            <p id="totalOrders">75</p>
-            <canvas id="ordersChart"></canvas>
-        </div>
-        <div class="stat-card">
-            <h2>Unika Kunder</h2>
-            <p id="uniqueCustomers">53</p>
-            <canvas id="customersChart"></canvas>
-        </div>
     </div>
 </div>
-
+    
     <div class="popup-overlay" id="popupOverlay">
         <div class="popup-content" id="popupContent">
             <button class="close-popup" onclick="closePopup()">✖</button>
@@ -354,99 +341,90 @@
             };
         });
 
-document.addEventListener("DOMContentLoaded", () => {
-    // Diagramdata
-    const salesData = [5000, 7000, 6000, 8000, 10000, 15000];
-    const visitorsData = [100, 200, 150, 250, 300, 400];
-    const ordersData = [10, 15, 12, 18, 20, 25];
-    const customersData = [5, 8, 7, 10, 12, 15];
-    const labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
+    document.addEventListener("DOMContentLoaded", () => {
+        // Data för diagram
+        const productsSoldData = [10, 20, 30, 40, 50];
+        const totalSalesData = [3000, 4000, 3500, 4500, 5000];
+        const totalVisitorsData = [100, 200, 150, 250, 300];
 
-    // Totalt Sålt
-    new Chart(document.getElementById("salesChart").getContext("2d"), {
-        type: "line",
-        data: {
-            labels: labels,
-            datasets: [
-                {
-                    label: "Totalt Sålt (kr)",
-                    data: salesData,
-                    backgroundColor: "rgba(74, 144, 226, 0.2)",
-                    borderColor: "#4a90e2",
-                    borderWidth: 2,
-                    tension: 0.4,
+        // Skapa diagram för produkter sålda
+        const productsChart = document.getElementById("productsChart").getContext("2d");
+        new Chart(productsChart, {
+            type: "bar",
+            data: {
+                labels: ["Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag"],
+                datasets: [{
+                    label: "Produkter Sålda",
+                    data: productsSoldData,
+                    backgroundColor: "rgba(75, 192, 192, 0.5)",
+                    borderColor: "rgba(75, 192, 192, 1)",
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
                 },
-            ],
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { display: false } },
-            scales: { x: { ticks: { color: "#fff" } }, y: { ticks: { color: "#fff" } } },
-        },
-    });
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
 
-    // Totala Besökare
-    new Chart(document.getElementById("visitorsChart").getContext("2d"), {
-        type: "bar",
-        data: {
-            labels: labels,
-            datasets: [
-                {
-                    label: "Totala Besökare",
-                    data: visitorsData,
-                    backgroundColor: "rgba(255, 193, 7, 0.8)",
-                    borderColor: "rgba(255, 193, 7, 1)",
-                    borderWidth: 1,
+        // Skapa diagram för totalt sålt
+        const salesChart = document.getElementById("salesChart").getContext("2d");
+        new Chart(salesChart, {
+            type: "line",
+            data: {
+                labels: ["Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag"],
+                datasets: [{
+                    label: "Totalt Sålt",
+                    data: totalSalesData,
+                    backgroundColor: "rgba(255, 159, 64, 0.5)",
+                    borderColor: "rgba(255, 159, 64, 1)",
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
                 },
-            ],
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { display: false } },
-            scales: { x: { ticks: { color: "#fff" } }, y: { ticks: { color: "#fff" } } },
-        },
-    });
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
 
-    // Beställningar
-    new Chart(document.getElementById("ordersChart").getContext("2d"), {
-        type: "pie",
-        data: {
-            labels: labels,
-            datasets: [
-                {
-                    label: "Beställningar",
-                    data: ordersData,
-                    backgroundColor: ["#4a90e2", "#6a11cb", "#ffcc00", "#e52e71", "#00c853", "#f44336"],
-                    borderColor: "#fff",
-                    borderWidth: 1,
+        // Skapa diagram för totala besökare
+        const visitorsChart = document.getElementById("visitorsChart").getContext("2d");
+        new Chart(visitorsChart, {
+            type: "bar",
+            data: {
+                labels: ["Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag"],
+                datasets: [{
+                    label: "Besökare",
+                    data: totalVisitorsData,
+                    backgroundColor: "rgba(54, 162, 235, 0.5)",
+                    borderColor: "rgba(54, 162, 235, 1)",
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
                 },
-            ],
-        },
-        options: { responsive: true, plugins: { legend: { display: true, position: "bottom" } } },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
     });
-
-    // Unika Kunder
-    new Chart(document.getElementById("customersChart").getContext("2d"), {
-        type: "bar",
-        data: {
-            labels: labels,
-            datasets: [
-                {
-                    label: "Unika Kunder",
-                    data: customersData,
-                    backgroundColor: "rgba(0, 188, 212, 0.8)",
-                    borderColor: "rgba(0, 188, 212, 1)",
-                    borderWidth: 1,
-                },
-            ],
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { display: false } },
-            scales: { x: { ticks: { color: "#fff" } }, y: { ticks: { color: "#fff" } } },
-        },
-    });
-});
     </script>
 </body>
 </html>
