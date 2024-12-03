@@ -11,7 +11,6 @@
             margin: 0;
             height: 100vh;
             display: flex;
-            overflow: hidden;
             background: linear-gradient(135deg, #e8e8e8, #4a90e2, #ffffff);
             background-size: 300% 300%;
             animation: gradientMove 10s infinite ease-in-out;
@@ -23,494 +22,143 @@
             100% { background-position: 0% 50%; }
         }
 
-        .login-popup {
+        /* Sidebar-styling */
+        .sidebar {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .login-popup-content {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .login-popup-content input {
-            display: block;
-            width: 100%;
-            margin: 10px 0;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-        }
-
-        .login-popup-content button {
-            padding: 10px 20px;
-            background-color: #4a90e2;
+            width: 60px;
+            background: linear-gradient(135deg, #4a90e2, #6a11cb);
             color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 10px 0;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+            transition: width 0.3s ease;
         }
 
-.dashboard {
-    margin-left: 60px; /* Justera beroende på sidobaren */
-    padding: 20px;
-    flex: 1;
-    background: linear-gradient(135deg, #e0f7fa, #ffffff);
-    border-radius: 15px;
-    color: #333;
-    overflow-y: auto; /* Skrollning */
-    height: 100vh;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    animation: fadeIn 0.5s ease;
-}
+        .sidebar:hover {
+            width: 200px;
+        }
 
-.dashboard-header {
-    text-align: center;
-    margin-bottom: 30px;
-}
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
 
-.dashboard-header h1 {
-    font-size: 2rem;
-    margin-bottom: 10px;
-    color: #007bff;
-}
+        .sidebar-item {
+            text-align: center;
+            padding: 15px 0;
+            cursor: pointer;
+            position: relative;
+            transition: background-color 0.3s ease;
+        }
 
-.dashboard-header p {
-    font-size: 1.2rem;
-    color: #555;
-}
+        .sidebar-item:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
 
-.stats-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 20px;
-}
+        .sidebar-title {
+            display: none;
+            font-size: 14px;
+            margin-top: 5px;
+        }
 
-.stat-card {
-    flex: 1 1 calc(33% - 20px); /* Tre kolumner */
-    background: linear-gradient(135deg, #ffffff, #e3f2fd);
-    color: #007bff;
-    text-align: center;
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    min-height: 200px; /* För att inkludera diagrammet */
-}
+        .sidebar:hover .sidebar-title {
+            display: inline-block;
+        }
 
-.stat-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3);
-}
+        .sidebar-item.active {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
 
-.stat-card h2 {
-    font-size: 1.5rem;
-    margin-bottom: 10px;
-}
+        .profile-section {
+            text-align: center;
+            padding: 15px 0;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.1);
+            transition: background-color 0.3s ease;
+        }
 
-.stat-card p {
-    font-size: 1.2rem;
-    font-weight: bold;
-    margin: 10px 0;
-}
+        .profile-section:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
 
-canvas {
-    margin-top: 10px;
-    max-height: 100px;
-}
-        .login-popup-content button:hover { background-color: #357abd; }
+        /* Dashboard-styling */
+        .dashboard {
+            margin-left: 60px;
+            padding: 20px;
+            flex: 1;
+            background: linear-gradient(135deg, #e0f7fa, #ffffff);
+            border-radius: 15px;
+            color: #333;
+            overflow-y: auto;
+            height: 100vh;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 0.5s ease;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #007bff;
+        }
+
+        .dashboard-header p {
+            font-size: 1.2rem;
+            color: #555;
+        }
     </style>
 </head>
 <body>
-<div class="sidebar">
-    <ul>
-        <li class="sidebar-item" onclick="showPopup('Produkter')">
-            🛒<span class="sidebar-title">Produkter</span>
-        </li>
-        <li class="sidebar-item" onclick="showPopup('Webbplats')">
-            🌐<span class="sidebar-title">Webbplats</span>
-        </li>
-        <li class="sidebar-item" onclick="showPopup('Betalningar')">
-            💳<span class="sidebar-title">Betalningar</span>
-        </li>
-        <li class="sidebar-item" onclick="showPopup('Inställningar')">
-            ⚙️<span class="sidebar-title">Inställningar</span>
-        </li>
-    </ul>
-    <div class="profile-section" onclick="showProfilePopup()">
-        <div>👤</div>
-        <span class="sidebar-title">Profil</span>
-    </div>
-</div>
-
-<div id="profilePopup" class="popup">
-    <div class="popup-content">
-        <h2>Redigera Profil</h2>
-        <label for="name">Namn</label>
-        <input type="text" id="name" placeholder="Ditt namn" />
-        <label for="email">E-post</label>
-        <input type="email" id="email" placeholder="Din e-post" />
-        <label for="phone">Mobilnummer</label>
-        <input type="text" id="phone" placeholder="Ditt mobilnummer" />
-        <label for="address">Adress</label>
-        <input type="text" id="address" placeholder="Din adress" />
-        <button onclick="saveProfile()">Spara</button>
-        <button class="logout-btn" onclick="logout()">Logga Ut</button>
-        <button onclick="closeProfilePopup()">Stäng</button>
-    </div>
-</div>
-
-<style>
-/* Sidebar-styling */
-.sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 60px;
-    background: linear-gradient(135deg, #4a90e2, #6a11cb);
-    color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 10px 0;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
-    transition: width 0.3s ease;
-    overflow: hidden;
-}
-
-.sidebar:hover {
-    width: 200px;
-}
-
-.sidebar ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.sidebar-item {
-    text-align: center;
-    padding: 15px 0;
-    cursor: pointer;
-    position: relative;
-}
-
-.sidebar-item:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-}
-
-.sidebar-title {
-    display: none;
-    font-size: 14px;
-    margin-top: 5px;
-}
-
-.sidebar:hover .sidebar-title {
-    display: inline-block;
-}
-
-.profile-section {
-    text-align: center;
-    padding: 15px 0;
-    cursor: pointer;
-    background: rgba(255, 255, 255, 0.1);
-    transition: background-color 0.3s ease;
-}
-
-.profile-section:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-/* Popup Styling */
-.popup {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
-}
-
-.popup-content {
-    background: white;
-    padding: 30px;
-    border-radius: 10px;
-    text-align: center;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    color: black;
-    width: 90%;
-    max-width: 400px;
-}
-</style>
-
-<div class="dashboard">
-    <div class="dashboard-header">
-        <h1>Välkommen till din Dashboard</h1>
-        <p>Snabb översikt över din butik.</p>
-    </div>
-    <div class="stats-container">
-        <div class="stat-card">
-            <h2>Produkter Sålda</h2>
-            <p id="productsSold">450</p>
-            <canvas id="productsChart"></canvas>
-        </div>
-        <div class="stat-card">
-            <h2>Totalt Sålt</h2>
-            <p id="totalSales">15,450 kr</p>
-            <canvas id="salesChart"></canvas>
-        </div>
-        <div class="stat-card">
-            <h2>Totala Besökare</h2>
-            <p id="totalVisitors">1,245</p>
-            <canvas id="visitorsChart"></canvas>
-        </div>
-    </div>
-</div>
-    
-    <div class="popup-overlay" id="popupOverlay">
-        <div class="popup-content" id="popupContent">
-            <button class="close-popup" onclick="closePopup()">✖</button>
-            <h2 id="popupTitle"></h2>
-            <div id="popupBody"></div>
+    <div class="sidebar">
+        <ul>
+            <li class="sidebar-item active">
+                <a href="index.html" style="color: white; text-decoration: none;">
+                    🏠<span class="sidebar-title">Översikt</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="produkter.html" style="color: white; text-decoration: none;">
+                    🛒<span class="sidebar-title">Produkter</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="webbplats.html" style="color: white; text-decoration: none;">
+                    🌐<span class="sidebar-title">Webbplats</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="betalningar.html" style="color: white; text-decoration: none;">
+                    💳<span class="sidebar-title">Betalningar</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="installningar.html" style="color: white; text-decoration: none;">
+                    ⚙️<span class="sidebar-title">Inställningar</span>
+                </a>
+            </li>
+        </ul>
+        <div class="profile-section">
+            <a href="profil.html" style="color: white; text-decoration: none;">
+                👤<span class="sidebar-title">Profil</span>
+            </a>
         </div>
     </div>
 
-    <div class="login-popup" id="loginPopup">
-        <div class="login-popup-content">
-            <h2>Logga in</h2>
-            <input type="email" id="loginEmail" placeholder="E-post" />
-            <input type="password" id="loginPassword" placeholder="Lösenord" />
-            <button id="loginButton">Logga in</button>
-            <br />
-            <button id="googleLoginButton">Logga in med Google</button>
+    <div class="dashboard">
+        <div class="dashboard-header">
+            <h1>Välkommen till din Dashboard</h1>
+            <p>Snabb översikt över din butik.</p>
         </div>
     </div>
-
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
-    <!-- Shart diagram SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<script>
-    // Firebase-konfiguration
-    const firebaseConfig = {
-        apiKey: "AIzaSyCFUjoTYuPxg-7wARDHPWLHvD9sjpVB8sk",
-        authDomain: "webbforma1.firebaseapp.com",
-        databaseURL: "https://webbforma1-default-rtdb.europe-west1.firebasedatabase.app",
-        projectId: "webbforma1",
-        storageBucket: "webbforma1.firebasestorage.app",
-        messagingSenderId: "875335609008",
-        appId: "1:875335609008:web:1d3cca6d257937a8526975",
-        measurementId: "G-QRXDZ5R2ZH"
-    };
-
-    // Initiera Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-
-    document.addEventListener("DOMContentLoaded", () => {
-        const loginPopup = document.getElementById("loginPopup");
-        const profilePopup = document.getElementById("profilePopup");
-
-        // Kontrollera om användaren redan är inloggad i session storage
-        if (sessionStorage.getItem("isLoggedIn") === "true") {
-            auth.onAuthStateChanged((user) => {
-                if (user) {
-                    console.log(`Inloggad som: ${user.email}`);
-                    if (loginPopup) loginPopup.style.display = "none";
-                } else {
-                    sessionStorage.removeItem("isLoggedIn");
-                    if (loginPopup) loginPopup.style.display = "flex";
-                }
-            });
-        } else {
-            if (loginPopup) loginPopup.style.display = "flex";
-        }
-
-        // E-postinloggning
-        const loginButton = document.getElementById("loginButton");
-        if (loginButton) {
-            loginButton.addEventListener("click", () => {
-                const email = document.getElementById("loginEmail").value;
-                const password = document.getElementById("loginPassword").value;
-
-                auth.signInWithEmailAndPassword(email, password)
-                    .then(() => {
-                        sessionStorage.setItem("isLoggedIn", "true");
-                        if (loginPopup) loginPopup.style.display = "none";
-                    })
-                    .catch((error) => {
-                        alert("Fel vid inloggning: " + error.message);
-                    });
-            });
-        }
-
-        // Google-inloggning
-        const googleLoginButton = document.getElementById("googleLoginButton");
-        if (googleLoginButton) {
-            googleLoginButton.addEventListener("click", () => {
-                const provider = new firebase.auth.GoogleAuthProvider();
-
-                auth.signInWithPopup(provider)
-                    .then(() => {
-                        sessionStorage.setItem("isLoggedIn", "true");
-                        if (loginPopup) loginPopup.style.display = "none";
-                    })
-                    .catch((error) => {
-                        alert("Google-inloggning misslyckades: " + error.message);
-                    });
-            });
-        }
-
-        // Logga ut och rensa session storage
-        const logoutButton = document.getElementById("logoutButton");
-        if (logoutButton) {
-            logoutButton.addEventListener("click", () => {
-                auth.signOut().then(() => {
-                    sessionStorage.removeItem("isLoggedIn");
-                    window.location.href = "https://admin.webstay.se";
-                }).catch((error) => {
-                    alert("Fel vid utloggning: " + error.message);
-                });
-            });
-        }
-
-        // Visa profilpopup
-        window.showProfilePopup = () => {
-            profilePopup.style.display = "flex";
-            const user = auth.currentUser;
-            if (user) {
-                document.getElementById("name").value = user.displayName || "";
-                document.getElementById("email").value = user.email || "";
-            }
-        };
-
-        // Stäng profilpopup
-        window.closeProfilePopup = () => {
-            profilePopup.style.display = "none";
-        };
-
-        // Spara användarprofil
-        window.saveProfile = () => {
-            const name = document.getElementById("name").value;
-
-            const user = auth.currentUser;
-            if (user) {
-                user.updateProfile({ displayName: name })
-                    .then(() => {
-                        alert("Profil uppdaterad!");
-                        closeProfilePopup();
-                    })
-                    .catch((error) => {
-                        alert("Fel vid uppdatering: " + error.message);
-                    });
-            }
-        };
-
-        // Data för diagram
-        const productsSoldData = [10, 20, 30, 40, 50];
-        const totalSalesData = [3000, 4000, 3500, 4500, 5000];
-        const totalVisitorsData = [100, 200, 150, 250, 300];
-
-        // Skapa diagram för produkter sålda
-        const productsChart = document.getElementById("productsChart").getContext("2d");
-        new Chart(productsChart, {
-            type: "bar",
-            data: {
-                labels: ["Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag"],
-                datasets: [{
-                    label: "Produkter Sålda",
-                    data: productsSoldData,
-                    backgroundColor: "rgba(75, 192, 192, 0.5)",
-                    borderColor: "rgba(75, 192, 192, 1)",
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    y: { beginAtZero: true }
-                }
-            }
-        });
-
-        // Skapa diagram för totalt sålt
-        const salesChart = document.getElementById("salesChart").getContext("2d");
-        new Chart(salesChart, {
-            type: "line",
-            data: {
-                labels: ["Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag"],
-                datasets: [{
-                    label: "Totalt Sålt",
-                    data: totalSalesData,
-                    backgroundColor: "rgba(255, 159, 64, 0.5)",
-                    borderColor: "rgba(255, 159, 64, 1)",
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    y: { beginAtZero: true }
-                }
-            }
-        });
-
-        // Skapa diagram för totala besökare
-        const visitorsChart = document.getElementById("visitorsChart").getContext("2d");
-        new Chart(visitorsChart, {
-            type: "bar",
-            data: {
-                labels: ["Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag"],
-                datasets: [{
-                    label: "Besökare",
-                    data: totalVisitorsData,
-                    backgroundColor: "rgba(54, 162, 235, 0.5)",
-                    borderColor: "rgba(54, 162, 235, 1)",
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    y: { beginAtZero: true }
-                }
-            }
-        });
-    });
-</script>
 </body>
 </html>
