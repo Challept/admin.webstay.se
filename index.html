@@ -141,6 +141,102 @@
             cursor: pointer;
         }
 
+        .dashboard {
+    margin-left: 60px; /* Justera beroende på sidobaren */
+    padding: 20px;
+    flex: 1;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    color: #333;
+    animation: fadeIn 0.5s ease;
+}
+
+.dashboard-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.dashboard-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    color: #4a90e2;
+}
+
+.dashboard-header p {
+    font-size: 1.2rem;
+    color: #555;
+}
+
+.stats-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.stat-card {
+    flex: 1 1 calc(25% - 20px);
+    background: linear-gradient(135deg, #4a90e2, #6a11cb);
+    color: white;
+    text-align: center;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3);
+}
+
+.stat-card h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.stat-card p {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.more-info {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.more-info h2 {
+    font-size: 1.8rem;
+    color: #333;
+}
+
+.more-info p {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    color: #555;
+}
+
+.more-info button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: white;
+    background: #4a90e2;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.more-info button:hover {
+    background-color: #357abd;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
         .login-popup-content button:hover { background-color: #357abd; }
     </style>
 </head>
@@ -153,6 +249,36 @@
             <li onclick="showPopup('Inställningar')">⚙️<span>Inställningar</span></li>
         </ul>
     </div>
+
+    <div class="dashboard">
+    <div class="dashboard-header">
+        <h1>Välkommen till din Dashboard</h1>
+        <p>Här är en snabb översikt över din butik.</p>
+    </div>
+    <div class="stats-container">
+        <div class="stat-card">
+            <h2>Totalt Sålt</h2>
+            <p id="totalSales">15,450 kr</p>
+        </div>
+        <div class="stat-card">
+            <h2>Totala Besökare</h2>
+            <p id="totalVisitors">1,245</p>
+        </div>
+        <div class="stat-card">
+            <h2>Beställningar</h2>
+            <p id="totalOrders">75</p>
+        </div>
+        <div class="stat-card">
+            <h2>Unika Kunder</h2>
+            <p id="uniqueCustomers">53</p>
+        </div>
+    </div>
+    <div class="more-info">
+        <h2>Detaljerad Statistik</h2>
+        <p>Använd den detaljerade analysen för att förstå din butiks prestanda och göra förbättringar.</p>
+        <button onclick="viewDetails()">Se Mer</button>
+    </div>
+</div>
 
     <div class="popup-overlay" id="popupOverlay">
         <div class="popup-content" id="popupContent">
@@ -245,6 +371,10 @@
                 popupOverlay.style.display = "none";
             };
         });
+
+        function viewDetails() {
+    alert("Detaljerad statistik kommer snart!");
+}
     </script>
 </body>
 </html>
