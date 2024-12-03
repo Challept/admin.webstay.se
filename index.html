@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <style>
-        /* Reset */
+        /* CSS */
         * {
             margin: 0;
             padding: 0;
@@ -78,32 +78,6 @@
             opacity: 1;
         }
 
-        .popup-overlay {
-            position: fixed;
-            top: 0;
-            left: 60px;
-            width: calc(100vw - 60px);
-            height: 100vh;
-            background-color: rgba(0, 0, 0, 0.6);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 999;
-        }
-
-        .popup-content {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            text-align: center;
-        }
-
-        .popup-content h2 {
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-
         .login-popup {
             position: fixed;
             top: 0;
@@ -166,14 +140,6 @@
         </ul>
     </div>
 
-    <div class="popup-overlay" id="popupOverlay">
-        <div class="popup-content">
-            <h2 id="popupTitle"></h2>
-            <p>Denna sektion kommer att implementeras senare.</p>
-            <button onclick="closePopup()">Stäng</button>
-        </div>
-    </div>
-
     <div class="login-popup" id="loginPopup">
         <div class="login-popup-content">
             <h2>Logga in</h2>
@@ -185,18 +151,27 @@
         </div>
     </div>
 
-    <script>
-        // Popup-funktioner
-        function showPopup(title) {
-            const popup = document.getElementById("popupOverlay");
-            document.getElementById("popupTitle").textContent = title;
-            popup.style.display = "flex";
-        }
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js"></script>
 
-        function closePopup() {
-            const popup = document.getElementById("popupOverlay");
-            popup.style.display = "none";
-        }
+    <script>
+        // Firebase-konfiguration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCFUjoTYuPxg-7wARDHPWLHvD9sjpVB8sk",
+            authDomain: "webbforma1.firebaseapp.com",
+            databaseURL: "https://webbforma1-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "webbforma1",
+            storageBucket: "webbforma1.firebasestorage.app",
+            messagingSenderId: "875335609008",
+            appId: "1:875335609008:web:1d3cca6d257937a8526975",
+            measurementId: "G-QRXDZ5R2ZH"
+        };
+
+        // Initiera Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
 
         // Login-popup kontroll
         document.addEventListener("DOMContentLoaded", () => {
@@ -235,6 +210,10 @@
                     });
             });
         });
+
+        function showPopup(title) {
+            alert(`Öppnar popup för: ${title}`);
+        }
     </script>
 </body>
 </html>
