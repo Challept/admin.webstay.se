@@ -23,112 +23,6 @@
             100% { background-position: 0% 50%; }
         }
 
-.sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 60px;
-    background: linear-gradient(135deg, #4a90e2, #6a11cb);
-    color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 10px 0;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
-}
-
-.sidebar ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.sidebar ul li {
-    text-align: center;
-    padding: 15px 0;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.sidebar ul li:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-}
-
-.sidebar ul li span {
-    display: block;
-    font-size: 12px;
-}
-
-.profile-section {
-    text-align: center;
-    cursor: pointer;
-    padding: 15px 0;
-    background: rgba(255, 255, 255, 0.1);
-    border-top: 1px solid rgba(255, 255, 255, 0.3);
-    transition: background-color 0.3s ease;
-}
-
-.profile-section:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-.profile-section span {
-    font-size: 12px;
-}
-
-.popup {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
-}
-
-.popup .popup-content {
-    background: linear-gradient(135deg, #ffffff, #e8e8e8);
-    color: #333;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    width: 90%;
-    max-width: 400px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-}
-
-.popup input {
-    width: 100%;
-    margin: 10px 0;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
-
-.popup button {
-    padding: 10px 20px;
-    margin-top: 10px;
-    background: #4a90e2;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.popup button.logout-btn {
-    background: red;
-    margin-top: 20px;
-}
-
-.popup button:hover {
-    background: #357abd;
-}
-
         .login-popup {
             position: fixed;
             top: 0;
@@ -240,16 +134,24 @@ canvas {
     </style>
 </head>
 <body>
-    <div class="sidebar">
+<div class="sidebar">
     <ul>
-        <li onclick="showPopup('Produkter')">🛒<span>Produkter</span></li>
-        <li onclick="showPopup('Webbplats')">🌐<span>Webbplats</span></li>
-        <li onclick="showPopup('Betalningar')">💳<span>Betalningar</span></li>
-        <li onclick="showPopup('Inställningar')">⚙️<span>Inställningar</span></li>
+        <li class="sidebar-item" onclick="showPopup('Produkter')">
+            🛒<span class="sidebar-title">Produkter</span>
+        </li>
+        <li class="sidebar-item" onclick="showPopup('Webbplats')">
+            🌐<span class="sidebar-title">Webbplats</span>
+        </li>
+        <li class="sidebar-item" onclick="showPopup('Betalningar')">
+            💳<span class="sidebar-title">Betalningar</span>
+        </li>
+        <li class="sidebar-item" onclick="showPopup('Inställningar')">
+            ⚙️<span class="sidebar-title">Inställningar</span>
+        </li>
     </ul>
     <div class="profile-section" onclick="showProfilePopup()">
         <div>👤</div>
-        <span>Profil</span>
+        <span class="sidebar-title">Profil</span>
     </div>
 </div>
 
@@ -269,6 +171,95 @@ canvas {
         <button onclick="closeProfilePopup()">Stäng</button>
     </div>
 </div>
+
+<style>
+/* Sidebar-styling */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 60px;
+    background: linear-gradient(135deg, #4a90e2, #6a11cb);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10px 0;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+    transition: width 0.3s ease;
+    overflow: hidden;
+}
+
+.sidebar:hover {
+    width: 200px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-item {
+    text-align: center;
+    padding: 15px 0;
+    cursor: pointer;
+    position: relative;
+}
+
+.sidebar-item:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-title {
+    display: none;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.sidebar:hover .sidebar-title {
+    display: inline-block;
+}
+
+.profile-section {
+    text-align: center;
+    padding: 15px 0;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+.profile-section:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Popup Styling */
+.popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-content {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    color: black;
+    width: 90%;
+    max-width: 400px;
+}
+</style>
 
 <div class="dashboard">
     <div class="dashboard-header">
@@ -321,7 +312,7 @@ canvas {
     <!-- Shart diagram SDK -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <script>
+<script>
     // Firebase-konfiguration
     const firebaseConfig = {
         apiKey: "AIzaSyCFUjoTYuPxg-7wARDHPWLHvD9sjpVB8sk",
@@ -340,9 +331,7 @@ canvas {
 
     document.addEventListener("DOMContentLoaded", () => {
         const loginPopup = document.getElementById("loginPopup");
-        const popupOverlay = document.getElementById("popupOverlay");
-        const popupTitle = document.getElementById("popupTitle");
-        const popupBody = document.getElementById("popupBody");
+        const profilePopup = document.getElementById("profilePopup");
 
         // Kontrollera om användaren redan är inloggad i session storage
         if (sessionStorage.getItem("isLoggedIn") === "true") {
@@ -400,71 +389,45 @@ canvas {
             logoutButton.addEventListener("click", () => {
                 auth.signOut().then(() => {
                     sessionStorage.removeItem("isLoggedIn");
-                    if (loginPopup) loginPopup.style.display = "flex";
+                    window.location.href = "https://admin.webstay.se";
                 }).catch((error) => {
                     alert("Fel vid utloggning: " + error.message);
                 });
             });
         }
 
-// Visa profilpopup
-window.showProfilePopup = () => {
-    const profilePopup = document.getElementById("profilePopup");
-    profilePopup.style.display = "flex";
+        // Visa profilpopup
+        window.showProfilePopup = () => {
+            profilePopup.style.display = "flex";
+            const user = auth.currentUser;
+            if (user) {
+                document.getElementById("name").value = user.displayName || "";
+                document.getElementById("email").value = user.email || "";
+            }
+        };
 
-    // Hämta användarens data från Firebase (om det finns)
-    const user = firebase.auth().currentUser;
-    if (user) {
-        document.getElementById("name").value = user.displayName || "";
-        document.getElementById("email").value = user.email || "";
-        // Här kan du lägga till ytterligare data som telefon och adress om det finns.
-    }
-};
+        // Stäng profilpopup
+        window.closeProfilePopup = () => {
+            profilePopup.style.display = "none";
+        };
 
-// Stäng profilpopup
-window.closeProfilePopup = () => {
-    const profilePopup = document.getElementById("profilePopup");
-    profilePopup.style.display = "none";
-};
+        // Spara användarprofil
+        window.saveProfile = () => {
+            const name = document.getElementById("name").value;
 
-// Spara användarprofil
-window.saveProfile = () => {
-    const name = document.getElementById("name").value;
-    const email = document.getElementById("email").value;
-    const phone = document.getElementById("phone").value;
-    const address = document.getElementById("address").value;
+            const user = auth.currentUser;
+            if (user) {
+                user.updateProfile({ displayName: name })
+                    .then(() => {
+                        alert("Profil uppdaterad!");
+                        closeProfilePopup();
+                    })
+                    .catch((error) => {
+                        alert("Fel vid uppdatering: " + error.message);
+                    });
+            }
+        };
 
-    const user = firebase.auth().currentUser;
-    if (user) {
-        user.updateProfile({
-            displayName: name,
-        })
-            .then(() => {
-                // Uppdatera ytterligare data i Firestore om det behövs
-                alert("Profil uppdaterad!");
-                closeProfilePopup();
-            })
-            .catch((error) => {
-                alert("Fel vid uppdatering: " + error.message);
-            });
-    }
-};
-
-// Logga ut
-window.logout = () => {
-    firebase
-        .auth()
-        .signOut()
-        .then(() => {
-            sessionStorage.removeItem("isLoggedIn");
-            window.location.href = "https://admin.webstay.se"; // Omdirigera till inloggningssida
-        })
-        .catch((error) => {
-            alert("Fel vid utloggning: " + error.message);
-        });
-};
-
-    document.addEventListener("DOMContentLoaded", () => {
         // Data för diagram
         const productsSoldData = [10, 20, 30, 40, 50];
         const totalSalesData = [3000, 4000, 3500, 4500, 5000];
@@ -548,6 +511,6 @@ window.logout = () => {
             }
         });
     });
-    </script>
+</script>
 </body>
 </html>
