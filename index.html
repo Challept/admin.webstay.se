@@ -16,7 +16,7 @@
             font-family: Arial, sans-serif;
             display: flex;
             height: 100vh;
-            color: #333;
+            overflow: hidden;
             background: linear-gradient(135deg, #e8e8e8, #4a90e2, #ffffff);
             background-size: 300% 300%;
             animation: gradientMove 10s infinite ease-in-out;
@@ -35,145 +35,206 @@
         }
 
         .sidebar {
-            width: 250px;
+            width: 60px;
+            height: 100%;
             background-color: #2c3e50;
-            color: white;
             display: flex;
             flex-direction: column;
-            transition: width 0.3s;
-            z-index: 1000;
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .sidebar.collapsed {
-            width: 60px;
-        }
-
-        .sidebar .sidebar-header {
-            padding: 20px;
-            display: flex;
             align-items: center;
-            justify-content: space-between;
-            background-color: #34495e;
+            transition: width 0.3s ease;
+            z-index: 1000;
+            position: fixed;
         }
 
-        .sidebar .sidebar-header h2 {
-            font-size: 20px;
+        .sidebar:hover {
+            width: 250px;
         }
 
         .sidebar ul {
             list-style: none;
-            padding: 0;
-            margin: 0;
+            width: 100%;
         }
 
         .sidebar ul li {
             display: flex;
             align-items: center;
-            padding: 15px 20px;
+            padding: 15px;
+            color: white;
             cursor: pointer;
             transition: background 0.3s ease;
         }
 
         .sidebar ul li:hover {
-            background-color: #1abc9c;
-        }
-
-        .sidebar ul li i {
-            font-size: 18px;
-            margin-right: 10px;
+            background-color: #34495e;
         }
 
         .sidebar ul li span {
-            display: inline-block;
-            white-space: nowrap;
+            margin-left: 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
-        .sidebar.collapsed ul li span {
+        .sidebar:hover ul li span {
+            opacity: 1;
+        }
+
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 60px;
+            width: calc(100vw - 60px);
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.6);
             display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
         }
 
-        .main-content {
-            flex-grow: 1;
-            padding: 20px;
-            overflow-y: auto;
-            background-color: #f9f9f9;
+        .popup-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
         }
 
-        .main-content h1 {
+        .popup-content h2 {
             font-size: 24px;
             margin-bottom: 20px;
         }
 
-        button {
+        .login-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .login-popup-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-popup-content input {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .login-popup-content button {
             padding: 10px 20px;
-            background-color: #1abc9c;
+            background-color: #4a90e2;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.3s ease;
         }
 
-        button:hover {
-            background-color: #16a085;
-            transform: scale(1.05);
+        .login-popup-content button:hover {
+            background-color: #357abd;
         }
     </style>
 </head>
 <body>
     <div class="sidebar">
-        <div class="sidebar-header">
-            <h2>WebbStay</h2>
-            <button id="toggleSidebar">☰</button>
-        </div>
         <ul>
-            <li><i class="fas fa-box"></i><span>Produkter</span></li>
-            <li><i class="fas fa-globe"></i><span>Webbplats</span></li>
-            <li><i class="fas fa-credit-card"></i><span>Betalningar</span></li>
-            <li><i class="fas fa-cog"></i><span>Inställningar</span></li>
-            <li><i class="fas fa-sign-out-alt"></i><span>Logga ut</span></li>
+            <li onclick="showPopup('Produkter')">
+                🛒<span>Produkter</span>
+            </li>
+            <li onclick="showPopup('Webbplats')">
+                🌐<span>Webbplats</span>
+            </li>
+            <li onclick="showPopup('Betalningar')">
+                💳<span>Betalningar</span>
+            </li>
+            <li onclick="showPopup('Inställningar')">
+                ⚙️<span>Inställningar</span>
+            </li>
         </ul>
     </div>
-    <div class="main-content">
-        <h1>Välkommen till din Dashboard</h1>
-        <p>Här kan du hantera dina produkter, webbplats och betalningsinställningar.</p>
+
+    <div class="popup-overlay" id="popupOverlay">
+        <div class="popup-content">
+            <h2 id="popupTitle"></h2>
+            <p>Denna sektion kommer att implementeras senare.</p>
+            <button onclick="closePopup()">Stäng</button>
+        </div>
+    </div>
+
+    <div class="login-popup" id="loginPopup">
+        <div class="login-popup-content">
+            <h2>Logga in</h2>
+            <input type="email" id="loginEmail" placeholder="E-post" />
+            <input type="password" id="loginPassword" placeholder="Lösenord" />
+            <button id="loginButton">Logga in</button>
+            <br />
+            <button id="googleLoginButton">Logga in med Google</button>
+        </div>
     </div>
 
     <script>
-        // Toggle Sidebar
-        document.getElementById("toggleSidebar").addEventListener("click", () => {
-            const sidebar = document.querySelector(".sidebar");
-            sidebar.classList.toggle("collapsed");
-        });
+        // Popup-funktioner
+        function showPopup(title) {
+            const popup = document.getElementById("popupOverlay");
+            document.getElementById("popupTitle").textContent = title;
+            popup.style.display = "flex";
+        }
 
-        // Placeholder for logout
-        const logoutButton = document.querySelector('.fa-sign-out-alt');
-        logoutButton.addEventListener("click", () => {
-            alert("Du har loggats ut.");
-        });
+        function closePopup() {
+            const popup = document.getElementById("popupOverlay");
+            popup.style.display = "none";
+        }
 
-        // Dynamisk Firebase Setup (lägg till din Firebase-konfiguration här)
-        const firebaseConfig = {
-            apiKey: "AIzaSyCFUjoTYuPxg-7wARDHPWLHvD9sjpVB8sk",
-            authDomain: "webbforma1.firebaseapp.com",
-            projectId: "webbforma1",
-            storageBucket: "webbforma1.firebasestorage.app",
-            messagingSenderId: "875335609008",
-            appId: "1:875335609008:web:1d3cca6d257937a8526975",
-            measurementId: "G-QRXDZ5R2ZH",
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-
-        auth.onAuthStateChanged((user) => {
-            if (!user) {
-                alert("Logga in för att komma åt adminpanelen.");
-                window.location.href = "/login";
+        // Login-popup kontroll
+        document.addEventListener("DOMContentLoaded", () => {
+            const loginPopup = document.getElementById("loginPopup");
+            if (!sessionStorage.getItem("isLoggedIn")) {
+                loginPopup.style.display = "flex";
             }
+
+            const loginButton = document.getElementById("loginButton");
+            const googleLoginButton = document.getElementById("googleLoginButton");
+
+            loginButton.addEventListener("click", () => {
+                const email = document.getElementById("loginEmail").value;
+                const password = document.getElementById("loginPassword").value;
+
+                auth.signInWithEmailAndPassword(email, password)
+                    .then(() => {
+                        sessionStorage.setItem("isLoggedIn", "true");
+                        loginPopup.style.display = "none";
+                    })
+                    .catch((error) => {
+                        alert("Fel vid inloggning: " + error.message);
+                    });
+            });
+
+            googleLoginButton.addEventListener("click", () => {
+                const provider = new firebase.auth.GoogleAuthProvider();
+
+                auth.signInWithPopup(provider)
+                    .then(() => {
+                        sessionStorage.setItem("isLoggedIn", "true");
+                        loginPopup.style.display = "none";
+                    })
+                    .catch((error) => {
+                        alert("Google-inloggning misslyckades: " + error.message);
+                    });
+            });
         });
     </script>
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </body>
 </html>
