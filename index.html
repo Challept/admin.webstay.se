@@ -296,11 +296,25 @@ canvas {
             const popupTitle = document.getElementById("popupTitle");
             const popupBody = document.getElementById("popupBody");
 
-            // Kontrollera inloggning
-            if (!sessionStorage.getItem("isLoggedIn")) {
+            // Kontrollera om användaren redan är inloggad i session storage
+            if (sessionStorage.getItem("isLoggedIn") === "true") {
+                // Kontrollera om Firebase fortfarande är aktivt
+                auth.onAuthStateChanged((user) => {
+                    if (user) {
+                        console.log(`Inloggad som: ${user.email}`);
+                        loginPopup.style.display = "none";
+                    } else {
+                        // Om Firebase-sessionen har gått ut
+                        sessionStorage.removeItem("isLoggedIn");
+                        loginPopup.style.display = "flex";
+                    }
+                });
+            } else {
+                // Visa inloggningspopup om inte inloggad
                 loginPopup.style.display = "flex";
             }
 
+            // E-postinloggning
             document.getElementById("loginButton").addEventListener("click", () => {
                 const email = document.getElementById("loginEmail").value;
                 const password = document.getElementById("loginPassword").value;
@@ -315,6 +329,7 @@ canvas {
                     });
             });
 
+            // Google-inloggning
             document.getElementById("googleLoginButton").addEventListener("click", () => {
                 const provider = new firebase.auth.GoogleAuthProvider();
 
@@ -327,6 +342,17 @@ canvas {
                         alert("Google-inloggning misslyckades: " + error.message);
                     });
             });
+
+            // Logga ut och rensa session storage
+            document.getElementById("logoutButton").addEventListener("click", () => {
+                auth.signOut().then(() => {
+                    sessionStorage.removeItem("isLoggedIn");
+                    loginPopup.style.display = "flex";
+                }).catch((error) => {
+                    alert("Fel vid utloggning: " + error.message);
+                });
+            });
+        });
 
             // Visa popup
             window.showPopup = (section) => {
