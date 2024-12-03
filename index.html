@@ -5,17 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <style>
-        /* CSS */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        /* Grundläggande styling */
         body {
             font-family: Arial, sans-serif;
-            display: flex;
+            margin: 0;
             height: 100vh;
+            display: flex;
             overflow: hidden;
             background: linear-gradient(135deg, #e8e8e8, #4a90e2, #ffffff);
             background-size: 300% 300%;
@@ -23,15 +18,9 @@
         }
 
         @keyframes gradientMove {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .sidebar {
@@ -41,17 +30,17 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            position: fixed;
             transition: width 0.3s ease;
             z-index: 1000;
-            position: fixed;
         }
 
-        .sidebar:hover {
-            width: 250px;
-        }
+        .sidebar:hover { width: 250px; }
 
         .sidebar ul {
             list-style: none;
+            padding: 0;
+            margin: 0;
             width: 100%;
         }
 
@@ -64,9 +53,7 @@
             transition: background 0.3s ease;
         }
 
-        .sidebar ul li:hover {
-            background-color: #34495e;
-        }
+        .sidebar ul li:hover { background-color: #34495e; }
 
         .sidebar ul li span {
             margin-left: 10px;
@@ -74,8 +61,45 @@
             transition: opacity 0.3s ease;
         }
 
-        .sidebar:hover ul li span {
-            opacity: 1;
+        .sidebar:hover ul li span { opacity: 1; }
+
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: none;
+            z-index: 999;
+        }
+
+        .popup-content {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .popup-content h2 {
+            margin-bottom: 20px;
+        }
+
+        .popup-content .close-popup {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
         }
 
         .login-popup {
@@ -117,27 +141,25 @@
             cursor: pointer;
         }
 
-        .login-popup-content button:hover {
-            background-color: #357abd;
-        }
+        .login-popup-content button:hover { background-color: #357abd; }
     </style>
 </head>
 <body>
     <div class="sidebar">
         <ul>
-            <li onclick="showPopup('Produkter')">
-                🛒<span>Produkter</span>
-            </li>
-            <li onclick="showPopup('Webbplats')">
-                🌐<span>Webbplats</span>
-            </li>
-            <li onclick="showPopup('Betalningar')">
-                💳<span>Betalningar</span>
-            </li>
-            <li onclick="showPopup('Inställningar')">
-                ⚙️<span>Inställningar</span>
-            </li>
+            <li onclick="showPopup('Produkter')">🛒<span>Produkter</span></li>
+            <li onclick="showPopup('Webbplats')">🌐<span>Webbplats</span></li>
+            <li onclick="showPopup('Betalningar')">💳<span>Betalningar</span></li>
+            <li onclick="showPopup('Inställningar')">⚙️<span>Inställningar</span></li>
         </ul>
+    </div>
+
+    <div class="popup-overlay" id="popupOverlay">
+        <div class="popup-content" id="popupContent">
+            <button class="close-popup" onclick="closePopup()">✖</button>
+            <h2 id="popupTitle"></h2>
+            <div id="popupBody"></div>
+        </div>
     </div>
 
     <div class="login-popup" id="loginPopup">
@@ -151,7 +173,7 @@
         </div>
     </div>
 
-    <!-- Firebase SDKs -->
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -170,20 +192,21 @@
         };
 
         // Initiera Firebase
-        const app = firebase.initializeApp(firebaseConfig);
+        firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
 
-        // Login-popup kontroll
         document.addEventListener("DOMContentLoaded", () => {
             const loginPopup = document.getElementById("loginPopup");
+            const popupOverlay = document.getElementById("popupOverlay");
+            const popupTitle = document.getElementById("popupTitle");
+            const popupBody = document.getElementById("popupBody");
+
+            // Kontrollera inloggning
             if (!sessionStorage.getItem("isLoggedIn")) {
                 loginPopup.style.display = "flex";
             }
 
-            const loginButton = document.getElementById("loginButton");
-            const googleLoginButton = document.getElementById("googleLoginButton");
-
-            loginButton.addEventListener("click", () => {
+            document.getElementById("loginButton").addEventListener("click", () => {
                 const email = document.getElementById("loginEmail").value;
                 const password = document.getElementById("loginPassword").value;
 
@@ -197,7 +220,7 @@
                     });
             });
 
-            googleLoginButton.addEventListener("click", () => {
+            document.getElementById("googleLoginButton").addEventListener("click", () => {
                 const provider = new firebase.auth.GoogleAuthProvider();
 
                 auth.signInWithPopup(provider)
@@ -209,11 +232,19 @@
                         alert("Google-inloggning misslyckades: " + error.message);
                     });
             });
-        });
 
-        function showPopup(title) {
-            alert(`Öppnar popup för: ${title}`);
-        }
+            // Visa popup
+            window.showPopup = (section) => {
+                popupTitle.textContent = section;
+                popupBody.innerHTML = `<p>Här kan du hantera ${section.toLowerCase()}.</p>`;
+                popupOverlay.style.display = "flex";
+            };
+
+            // Stäng popup
+            window.closePopup = () => {
+                popupOverlay.style.display = "none";
+            };
+        });
     </script>
 </body>
 </html>
