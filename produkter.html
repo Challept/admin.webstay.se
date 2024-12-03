@@ -135,6 +135,20 @@
         .product-item:last-child {
             border-bottom: none;
         }
+
+        /* Email-box styling */
+        .email-box {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            font-size: 14px;
+            color: #333;
+            display: none; /* Visas endast om e-post finns */
+        }
     </style>
 </head>
 <body>
@@ -186,10 +200,23 @@
         </div>
     </div>
 
+    <div class="email-box" id="emailBox"></div>
+
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const productsList = document.getElementById("productsList");
             const addProductBtn = document.getElementById("addProductBtn");
+            const emailBox = document.getElementById("emailBox");
+
+            // Kolla om användaren är inloggad
+            const email = sessionStorage.getItem("email");
+            if (email) {
+                emailBox.textContent = `Inloggad som: ${email}`;
+                emailBox.style.display = "block";
+            } else {
+                alert("Du måste logga in för att få tillgång till denna sida!");
+                window.location.href = "login.html";
+            }
 
             // Lägg till ny produkt
             addProductBtn.addEventListener("click", () => {
