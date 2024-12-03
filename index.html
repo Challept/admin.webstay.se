@@ -71,10 +71,6 @@
             display: inline-block;
         }
 
-        .sidebar-item.active {
-            background-color: rgba(255, 255, 255, 0.3);
-        }
-
         .profile-section {
             text-align: center;
             padding: 15px 0;
@@ -116,42 +112,96 @@
             font-size: 1.2rem;
             color: #555;
         }
+
+        .stats-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .stat-card {
+            flex: 1 1 calc(33% - 20px);
+            background: linear-gradient(135deg, #ffffff, #e3f2fd);
+            color: #007bff;
+            text-align: center;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            min-height: 200px;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        canvas {
+            margin-top: 10px;
+            max-height: 100px;
+        }
+
+        /* Login popup */
+        .login-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .login-popup-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-popup-content input {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .login-popup-content button {
+            padding: 10px 20px;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <div class="sidebar">
         <ul>
             <li class="sidebar-item active">
-                <a href="index.html" style="color: white; text-decoration: none;">
-                    🏠<span class="sidebar-title">Översikt</span>
-                </a>
+                🏠<span class="sidebar-title">Översikt</span>
             </li>
             <li class="sidebar-item">
-                <a href="produkter.html" style="color: white; text-decoration: none;">
-                    🛒<span class="sidebar-title">Produkter</span>
-                </a>
+                🛒<span class="sidebar-title">Produkter</span>
             </li>
             <li class="sidebar-item">
-                <a href="webbplats.html" style="color: white; text-decoration: none;">
-                    🌐<span class="sidebar-title">Webbplats</span>
-                </a>
+                🌐<span class="sidebar-title">Webbplats</span>
             </li>
             <li class="sidebar-item">
-                <a href="betalningar.html" style="color: white; text-decoration: none;">
-                    💳<span class="sidebar-title">Betalningar</span>
-                </a>
+                💳<span class="sidebar-title">Betalningar</span>
             </li>
             <li class="sidebar-item">
-                <a href="installningar.html" style="color: white; text-decoration: none;">
-                    ⚙️<span class="sidebar-title">Inställningar</span>
-                </a>
+                ⚙️<span class="sidebar-title">Inställningar</span>
             </li>
         </ul>
-        <div class="profile-section">
-            <a href="profil.html" style="color: white; text-decoration: none;">
-                👤<span class="sidebar-title">Profil</span>
-            </a>
-        </div>
     </div>
 
     <div class="dashboard">
@@ -159,6 +209,92 @@
             <h1>Välkommen till din Dashboard</h1>
             <p>Snabb översikt över din butik.</p>
         </div>
+        <div class="stats-container">
+            <div class="stat-card">
+                <h2>Produkter Sålda</h2>
+                <canvas id="productsChart"></canvas>
+            </div>
+            <div class="stat-card">
+                <h2>Totalt Sålt</h2>
+                <canvas id="salesChart"></canvas>
+            </div>
+            <div class="stat-card">
+                <h2>Totala Besökare</h2>
+                <canvas id="visitorsChart"></canvas>
+            </div>
+        </div>
     </div>
+
+    <div class="login-popup" id="loginPopup">
+        <div class="login-popup-content">
+            <h2>Logga in</h2>
+            <input type="email" id="loginEmail" placeholder="E-post" />
+            <input type="password" id="loginPassword" placeholder="Lösenord" />
+            <button id="loginButton">Logga in</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const loginPopup = document.getElementById("loginPopup");
+
+            // Check if logged in
+            if (sessionStorage.getItem("isLoggedIn") === "true") {
+                loginPopup.style.display = "none";
+            } else {
+                loginPopup.style.display = "flex";
+            }
+
+            document.getElementById("loginButton").addEventListener("click", () => {
+                const email = document.getElementById("loginEmail").value;
+                const password = document.getElementById("loginPassword").value;
+
+                if (email && password) {
+                    sessionStorage.setItem("isLoggedIn", "true");
+                    loginPopup.style.display = "none";
+                } else {
+                    alert("Fyll i både e-post och lösenord.");
+                }
+            });
+
+            // Chart data
+            const productsChart = new Chart(document.getElementById("productsChart"), {
+                type: "bar",
+                data: {
+                    labels: ["Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag"],
+                    datasets: [{
+                        label: "Produkter Sålda",
+                        data: [10, 20, 30, 40, 50],
+                        backgroundColor: "rgba(75, 192, 192, 0.5)",
+                    }]
+                }
+            });
+
+            const salesChart = new Chart(document.getElementById("salesChart"), {
+                type: "line",
+                data: {
+                    labels: ["Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag"],
+                    datasets: [{
+                        label: "Totalt Sålt",
+                        data: [3000, 4000, 3500, 4500, 5000],
+                        borderColor: "rgba(255, 159, 64, 1)"
+                    }]
+                }
+            });
+
+            const visitorsChart = new Chart(document.getElementById("visitorsChart"), {
+                type: "bar",
+                data: {
+                    labels: ["Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag"],
+                    datasets: [{
+                        label: "Besökare",
+                        data: [100, 200, 150, 250, 300],
+                        backgroundColor: "rgba(54, 162, 235, 0.5)"
+                    }]
+                }
+            });
+        });
+    </script>
 </body>
 </html>
