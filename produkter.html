@@ -4,39 +4,170 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Produkter</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Grundläggande styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            background: linear-gradient(135deg, #e8e8e8, #ffffff);
+            overflow: hidden;
+        }
+
+        /* Sidebar-styling */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 60px;
+            height: 100%;
+            background: linear-gradient(135deg, #4a90e2, #6a11cb);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: width 0.3s ease;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar:hover {
+            width: 200px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-item {
+            text-align: center;
+            padding: 15px 0;
+            cursor: pointer;
+        }
+
+        .sidebar-link {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sidebar-title {
+            font-size: 14px;
+            display: none;
+            margin-top: 5px;
+        }
+
+        .sidebar:hover .sidebar-title {
+            display: inline;
+        }
+
+        .sidebar-item.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .profile-section {
+            text-align: center;
+            padding: 15px 0;
+            background: rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .profile-section:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Dashboard-styling */
+        .dashboard {
+            margin-left: 60px;
+            padding: 20px;
+            flex: 1;
+            background: linear-gradient(135deg, #ffffff, #f5f5f5);
+            overflow-y: auto;
+            animation: fadeIn 0.5s ease;
+            height: 100vh;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .dashboard-header h1 {
+            font-size: 2rem;
+            color: #4a90e2;
+        }
+
+        .products-container {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        #addProductBtn {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        #addProductBtn:hover {
+            background: #45a049;
+        }
+
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .product-item:last-child {
+            border-bottom: none;
+        }
+    </style>
 </head>
 <body>
     <div class="sidebar">
         <ul>
             <li class="sidebar-item">
-                <a href="index.html" style="color: white; text-decoration: none;">
+                <a href="index.html" class="sidebar-link">
                     🏠<span class="sidebar-title">Översikt</span>
                 </a>
             </li>
             <li class="sidebar-item active">
-                <a href="produkter.html" style="color: white; text-decoration: none;">
+                <a href="produkter.html" class="sidebar-link">
                     🛒<span class="sidebar-title">Produkter</span>
                 </a>
             </li>
             <li class="sidebar-item">
-                <a href="webbplats.html" style="color: white; text-decoration: none;">
+                <a href="webbplats.html" class="sidebar-link">
                     🌐<span class="sidebar-title">Webbplats</span>
                 </a>
             </li>
             <li class="sidebar-item">
-                <a href="betalningar.html" style="color: white; text-decoration: none;">
+                <a href="betalningar.html" class="sidebar-link">
                     💳<span class="sidebar-title">Betalningar</span>
                 </a>
             </li>
             <li class="sidebar-item">
-                <a href="installningar.html" style="color: white; text-decoration: none;">
+                <a href="installningar.html" class="sidebar-link">
                     ⚙️<span class="sidebar-title">Inställningar</span>
                 </a>
             </li>
         </ul>
         <div class="profile-section">
-            <a href="profil.html" style="color: white; text-decoration: none;">
+            <a href="profil.html" class="sidebar-link">
                 👤<span class="sidebar-title">Profil</span>
             </a>
         </div>
@@ -47,6 +178,38 @@
             <h1>Produkter</h1>
             <p>Hantera dina produkter här.</p>
         </div>
+        <div class="products-container">
+            <button id="addProductBtn">➕ Lägg till Produkt</button>
+            <div id="productsList">
+                <!-- Produkter läggs till här -->
+            </div>
+        </div>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const productsList = document.getElementById("productsList");
+            const addProductBtn = document.getElementById("addProductBtn");
+
+            // Lägg till ny produkt
+            addProductBtn.addEventListener("click", () => {
+                const productName = prompt("Ange produktnamn:");
+                if (productName) {
+                    const productItem = document.createElement("div");
+                    productItem.classList.add("product-item");
+                    productItem.innerHTML = `
+                        <span>${productName}</span>
+                        <button class="delete-btn">❌</button>
+                    `;
+                    productsList.appendChild(productItem);
+
+                    // Ta bort produkt
+                    productItem.querySelector(".delete-btn").addEventListener("click", () => {
+                        productsList.removeChild(productItem);
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>
