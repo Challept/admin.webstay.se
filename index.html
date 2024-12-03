@@ -274,97 +274,103 @@ canvas {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        // Firebase-konfiguration
-        const firebaseConfig = {
-            apiKey: "AIzaSyCFUjoTYuPxg-7wARDHPWLHvD9sjpVB8sk",
-            authDomain: "webbforma1.firebaseapp.com",
-            databaseURL: "https://webbforma1-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "webbforma1",
-            storageBucket: "webbforma1.firebasestorage.app",
-            messagingSenderId: "875335609008",
-            appId: "1:875335609008:web:1d3cca6d257937a8526975",
-            measurementId: "G-QRXDZ5R2ZH"
-        };
+    // Firebase-konfiguration
+    const firebaseConfig = {
+        apiKey: "AIzaSyCFUjoTYuPxg-7wARDHPWLHvD9sjpVB8sk",
+        authDomain: "webbforma1.firebaseapp.com",
+        databaseURL: "https://webbforma1-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "webbforma1",
+        storageBucket: "webbforma1.firebasestorage.app",
+        messagingSenderId: "875335609008",
+        appId: "1:875335609008:web:1d3cca6d257937a8526975",
+        measurementId: "G-QRXDZ5R2ZH"
+    };
 
-        // Initiera Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
+    // Initiera Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
 
-        document.addEventListener("DOMContentLoaded", () => {
-            const loginPopup = document.getElementById("loginPopup");
-            const popupOverlay = document.getElementById("popupOverlay");
-            const popupTitle = document.getElementById("popupTitle");
-            const popupBody = document.getElementById("popupBody");
+    document.addEventListener("DOMContentLoaded", () => {
+        const loginPopup = document.getElementById("loginPopup");
+        const popupOverlay = document.getElementById("popupOverlay");
+        const popupTitle = document.getElementById("popupTitle");
+        const popupBody = document.getElementById("popupBody");
 
-            // Kontrollera om användaren redan är inloggad i session storage
-            if (sessionStorage.getItem("isLoggedIn") === "true") {
-                // Kontrollera om Firebase fortfarande är aktivt
-                auth.onAuthStateChanged((user) => {
-                    if (user) {
-                        console.log(`Inloggad som: ${user.email}`);
-                        loginPopup.style.display = "none";
-                    } else {
-                        // Om Firebase-sessionen har gått ut
-                        sessionStorage.removeItem("isLoggedIn");
-                        loginPopup.style.display = "flex";
-                    }
-                });
-            } else {
-                // Visa inloggningspopup om inte inloggad
-                loginPopup.style.display = "flex";
-            }
+        // Kontrollera om användaren redan är inloggad i session storage
+        if (sessionStorage.getItem("isLoggedIn") === "true") {
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    console.log(`Inloggad som: ${user.email}`);
+                    if (loginPopup) loginPopup.style.display = "none";
+                } else {
+                    sessionStorage.removeItem("isLoggedIn");
+                    if (loginPopup) loginPopup.style.display = "flex";
+                }
+            });
+        } else {
+            if (loginPopup) loginPopup.style.display = "flex";
+        }
 
-            // E-postinloggning
-            document.getElementById("loginButton").addEventListener("click", () => {
+        // E-postinloggning
+        const loginButton = document.getElementById("loginButton");
+        if (loginButton) {
+            loginButton.addEventListener("click", () => {
                 const email = document.getElementById("loginEmail").value;
                 const password = document.getElementById("loginPassword").value;
 
                 auth.signInWithEmailAndPassword(email, password)
                     .then(() => {
                         sessionStorage.setItem("isLoggedIn", "true");
-                        loginPopup.style.display = "none";
+                        if (loginPopup) loginPopup.style.display = "none";
                     })
                     .catch((error) => {
                         alert("Fel vid inloggning: " + error.message);
                     });
             });
+        }
 
-            // Google-inloggning
-            document.getElementById("googleLoginButton").addEventListener("click", () => {
+        // Google-inloggning
+        const googleLoginButton = document.getElementById("googleLoginButton");
+        if (googleLoginButton) {
+            googleLoginButton.addEventListener("click", () => {
                 const provider = new firebase.auth.GoogleAuthProvider();
 
                 auth.signInWithPopup(provider)
                     .then(() => {
                         sessionStorage.setItem("isLoggedIn", "true");
-                        loginPopup.style.display = "none";
+                        if (loginPopup) loginPopup.style.display = "none";
                     })
                     .catch((error) => {
                         alert("Google-inloggning misslyckades: " + error.message);
                     });
             });
+        }
 
-            // Logga ut och rensa session storage
-            document.getElementById("logoutButton").addEventListener("click", () => {
+        // Logga ut och rensa session storage
+        const logoutButton = document.getElementById("logoutButton");
+        if (logoutButton) {
+            logoutButton.addEventListener("click", () => {
                 auth.signOut().then(() => {
                     sessionStorage.removeItem("isLoggedIn");
-                    loginPopup.style.display = "flex";
+                    if (loginPopup) loginPopup.style.display = "flex";
                 }).catch((error) => {
                     alert("Fel vid utloggning: " + error.message);
                 });
             });
+        }
 
-            // Visa popup
-            window.showPopup = (section) => {
-                popupTitle.textContent = section;
-                popupBody.innerHTML = `<p>Här kan du hantera ${section.toLowerCase()}.</p>`;
-                popupOverlay.style.display = "flex";
-            };
+        // Visa popup
+        window.showPopup = (section) => {
+            if (popupTitle) popupTitle.textContent = section;
+            if (popupBody) popupBody.innerHTML = `<p>Här kan du hantera ${section.toLowerCase()}.</p>`;
+            if (popupOverlay) popupOverlay.style.display = "flex";
+        };
 
-            // Stäng popup
-            window.closePopup = () => {
-                popupOverlay.style.display = "none";
-            };
-        });
+        // Stäng popup
+        window.closePopup = () => {
+            if (popupOverlay) popupOverlay.style.display = "none";
+        };
+    });
 
     document.addEventListener("DOMContentLoaded", () => {
         // Data för diagram
