@@ -141,11 +141,10 @@
             cursor: pointer;
         }
 
-        .dashboard {
-    margin-left: 60px; /* Justera beroende på sidobaren */
+.dashboard {
+    margin-left: 60px;
     padding: 20px;
-    flex: 1;
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.9);
     border-radius: 15px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     color: #333;
@@ -154,17 +153,16 @@
 
 .dashboard-header {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 .dashboard-header h1 {
-    font-size: 2.5rem;
-    margin-bottom: 10px;
+    font-size: 2rem;
     color: #4a90e2;
 }
 
 .dashboard-header p {
-    font-size: 1.2rem;
+    font-size: 1rem;
     color: #555;
 }
 
@@ -172,18 +170,19 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    gap: 20px;
+    gap: 15px;
 }
 
 .stat-card {
-    flex: 1 1 calc(25% - 20px);
+    flex: 1 1 calc(50% - 15px);
     background: linear-gradient(135deg, #4a90e2, #6a11cb);
     color: white;
     text-align: center;
     padding: 20px;
-    border-radius: 15px;
+    border-radius: 10px;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
 }
 
 .stat-card:hover {
@@ -192,50 +191,31 @@
 }
 
 .stat-card h2 {
-    font-size: 1.5rem;
-    margin-bottom: 10px;
+    font-size: 1.2rem;
+    margin-bottom: 5px;
 }
 
 .stat-card p {
-    font-size: 1.2rem;
+    font-size: 1rem;
     font-weight: bold;
     margin: 0;
 }
 
-.more-info {
-    text-align: center;
-    margin-top: 30px;
-}
-
-.more-info h2 {
-    font-size: 1.8rem;
-    color: #333;
-}
-
-.more-info p {
-    font-size: 1.1rem;
-    margin-bottom: 20px;
-    color: #555;
-}
-
-.more-info button {
-    padding: 10px 20px;
-    font-size: 1rem;
-    color: white;
-    background: #4a90e2;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.more-info button:hover {
-    background-color: #357abd;
+.stat-card canvas {
+    max-width: 100%;
+    height: 150px;
+    margin-top: 15px;
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
         .login-popup-content button:hover { background-color: #357abd; }
     </style>
@@ -250,33 +230,32 @@
         </ul>
     </div>
 
-    <div class="dashboard">
+<div class="dashboard">
     <div class="dashboard-header">
-        <h1>Välkommen till din Dashboard</h1>
-        <p>Här är en snabb översikt över din butik.</p>
+        <h1>Dashboard</h1>
+        <p>En snabb översikt över din butik.</p>
     </div>
     <div class="stats-container">
         <div class="stat-card">
             <h2>Totalt Sålt</h2>
             <p id="totalSales">15,450 kr</p>
+            <canvas id="salesChart"></canvas>
         </div>
         <div class="stat-card">
             <h2>Totala Besökare</h2>
             <p id="totalVisitors">1,245</p>
+            <canvas id="visitorsChart"></canvas>
         </div>
         <div class="stat-card">
             <h2>Beställningar</h2>
             <p id="totalOrders">75</p>
+            <canvas id="ordersChart"></canvas>
         </div>
         <div class="stat-card">
             <h2>Unika Kunder</h2>
             <p id="uniqueCustomers">53</p>
+            <canvas id="customersChart"></canvas>
         </div>
-    </div>
-    <div class="more-info">
-        <h2>Detaljerad Statistik</h2>
-        <p>Använd den detaljerade analysen för att förstå din butiks prestanda och göra förbättringar.</p>
-        <button onclick="viewDetails()">Se Mer</button>
     </div>
 </div>
 
@@ -303,6 +282,9 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <!-- Shart diagram SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
         // Firebase-konfiguration
@@ -372,9 +354,99 @@
             };
         });
 
-        function viewDetails() {
-    alert("Detaljerad statistik kommer snart!");
-}
+document.addEventListener("DOMContentLoaded", () => {
+    // Diagramdata
+    const salesData = [5000, 7000, 6000, 8000, 10000, 15000];
+    const visitorsData = [100, 200, 150, 250, 300, 400];
+    const ordersData = [10, 15, 12, 18, 20, 25];
+    const customersData = [5, 8, 7, 10, 12, 15];
+    const labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
+
+    // Totalt Sålt
+    new Chart(document.getElementById("salesChart").getContext("2d"), {
+        type: "line",
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: "Totalt Sålt (kr)",
+                    data: salesData,
+                    backgroundColor: "rgba(74, 144, 226, 0.2)",
+                    borderColor: "#4a90e2",
+                    borderWidth: 2,
+                    tension: 0.4,
+                },
+            ],
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: { x: { ticks: { color: "#fff" } }, y: { ticks: { color: "#fff" } } },
+        },
+    });
+
+    // Totala Besökare
+    new Chart(document.getElementById("visitorsChart").getContext("2d"), {
+        type: "bar",
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: "Totala Besökare",
+                    data: visitorsData,
+                    backgroundColor: "rgba(255, 193, 7, 0.8)",
+                    borderColor: "rgba(255, 193, 7, 1)",
+                    borderWidth: 1,
+                },
+            ],
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: { x: { ticks: { color: "#fff" } }, y: { ticks: { color: "#fff" } } },
+        },
+    });
+
+    // Beställningar
+    new Chart(document.getElementById("ordersChart").getContext("2d"), {
+        type: "pie",
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: "Beställningar",
+                    data: ordersData,
+                    backgroundColor: ["#4a90e2", "#6a11cb", "#ffcc00", "#e52e71", "#00c853", "#f44336"],
+                    borderColor: "#fff",
+                    borderWidth: 1,
+                },
+            ],
+        },
+        options: { responsive: true, plugins: { legend: { display: true, position: "bottom" } } },
+    });
+
+    // Unika Kunder
+    new Chart(document.getElementById("customersChart").getContext("2d"), {
+        type: "bar",
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: "Unika Kunder",
+                    data: customersData,
+                    backgroundColor: "rgba(0, 188, 212, 0.8)",
+                    borderColor: "rgba(0, 188, 212, 1)",
+                    borderWidth: 1,
+                },
+            ],
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: { x: { ticks: { color: "#fff" } }, y: { ticks: { color: "#fff" } } },
+        },
+    });
+});
     </script>
 </body>
 </html>
