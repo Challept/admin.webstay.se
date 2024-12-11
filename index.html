@@ -71,6 +71,32 @@
             display: inline-block;
         }
 
+            .sidebar-item {
+        text-align: center;
+        padding: 15px 0;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        color: white;
+    }
+
+    .sidebar-item:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .sidebar-item.active {
+        background-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .sidebar-title {
+        display: none;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+
+    .sidebar:hover .sidebar-title {
+        display: inline-block;
+    }
+
         .profile-section {
             text-align: center;
             padding: 15px 0;
@@ -184,25 +210,46 @@
     </style>
 </head>
 <body>
-    <div class="sidebar">
-        <ul>
-            <li class="sidebar-item active">
-                🏠<span class="sidebar-title">Översikt</span>
-            </li>
-            <li class="sidebar-item">
-                🛒<span class="sidebar-title">Produkter</span>
-            </li>
-            <li class="sidebar-item">
-                🌐<span class="sidebar-title">Webbplats</span>
-            </li>
-            <li class="sidebar-item">
-                💳<span class="sidebar-title">Betalningar</span>
-            </li>
-            <li class="sidebar-item">
-                ⚙️<span class="sidebar-title">Inställningar</span>
-            </li>
-        </ul>
-    </div>
+<div class="sidebar">
+    <ul>
+        <li class="sidebar-item active" onclick="navigateTo('index.html')">
+            🏠<span class="sidebar-title">Översikt</span>
+        </li>
+        <li class="sidebar-item" onclick="navigateTo('produkter.html')">
+            🛒<span class="sidebar-title">Produkter</span>
+        </li>
+        <li class="sidebar-item" onclick="navigateTo('webbplats.html')">
+            🌐<span class="sidebar-title">Webbplats</span>
+        </li>
+        <li class="sidebar-item" onclick="navigateTo('betalningar.html')">
+            💳<span class="sidebar-title">Betalningar</span>
+        </li>
+        <li class="sidebar-item" onclick="navigateTo('installningar.html')">
+            ⚙️<span class="sidebar-title">Inställningar</span>
+        </li>
+    </ul>
+</div>
+
+<script>
+    // Funktion för att navigera till olika sidor
+    function navigateTo(page) {
+        window.location.href = page;
+    }
+
+    // Markera det aktiva objektet i sidobaren
+    document.addEventListener("DOMContentLoaded", () => {
+        const items = document.querySelectorAll('.sidebar-item');
+        const currentPage = window.location.pathname.split('/').pop();
+
+        items.forEach(item => {
+            const link = item.getAttribute('onclick').match(/'(.*?)'/)[1]; // Extrahera länk
+            if (link === currentPage) {
+                items.forEach(i => i.classList.remove('active')); // Ta bort alla aktiva klasser
+                item.classList.add('active'); // Lägg till "active" för nuvarande sida
+            }
+        });
+    });
+</script>
 
     <div class="dashboard">
         <div class="dashboard-header">
