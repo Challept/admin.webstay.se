@@ -117,43 +117,43 @@
     </style>
   </head>
   <body>
-    <div id="container">
-      <div class="container">
-        <div class="banner">
-          <h2>Webstay</h2>
-        </div>
-        <div class="content">
-          <h2 id="title">Get ready for take off</h2>
-          <p id="subtitle">Webstay is the world's leading air travel platform: join our team of pilots to help people travel faster.</p>
-          <h2 id="add-information-title" class="hidden">Add information to start accepting money</h2>
-          <p id="add-information-subtitle" class="hidden">Webstay partners with Stripe to help you receive payments while keeping your personal and bank details secure.</p>
-          <div>
-            <button id="sign-up-button">
-              Sign up
-            </button>
-          </div>
-          <div>
-            <button id="add-information-button" class="hidden">
-              Add information
-            </button>
-          </div>
-          <h2 id="details-submitted-title" class="hidden">Details submitted</h2>
-          <p id="details-submitted-subtitle" class="hidden">That's everything we need for now</p>
-          <p id="error" class="error hidden">Something went wrong!</p>
-          <div id="dev-callout" class="dev-callout hidden">
-            <p id="connected-account-id" class="hidden"></p>
-            <p id="creating-connected-account" class="hidden">Creating a connected account...</p>
-            <p id="adding-onboarding-information" class="hidden">Adding some onboarding information...</p>
-          </div>
-          <div class="info-callout">
-            <p>
-              This is a sample app for Stripe-hosted Connect onboarding. <a href="https://docs.stripe.com/connect/onboarding/quickstart?connect-onboarding-surface=hosted" target="_blank" rel="noopener noreferrer">View docs</a>
-            </p>
-          </div>
-        </div>
+<div id="container">
+  <div class="container">
+    <div class="banner">
+      <h2>Webstay</h2>
+    </div>
+    <div class="content">
+      <h2 id="title">Förbered dig för att skapa din webbplats</h2>
+      <p id="subtitle">Webstay är en plattform där du enkelt kan beställa och hosta din egen hemsida. Vi erbjuder professionella webblösningar för alla behov, oavsett om du vill starta en personlig blogg, ett företag eller en e-handelswebbplats.</p>
+      <h2 id="add-information-title" class="hidden">Lägg till information för att börja ta emot betalningar</h2>
+      <p id="add-information-subtitle" class="hidden">Webstay samarbetar med Stripe för att hjälpa dig ta emot betalningar samtidigt som dina personliga och bankuppgifter hålls säkra.</p>
+      <div>
+        <button id="sign-up-button">
+          Registrera dig
+        </button>
+      </div>
+      <div>
+        <button id="add-information-button" class="hidden">
+          Lägg till information
+        </button>
+      </div>
+      <h2 id="details-submitted-title" class="hidden">Information inlämnad</h2>
+      <p id="details-submitted-subtitle" class="hidden">Det var allt vi behövde för nu</p>
+      <p id="error" class="error hidden">Något gick fel!</p>
+      <div id="dev-callout" class="dev-callout hidden">
+        <p id="connected-account-id" class="hidden"></p>
+        <p id="creating-connected-account" class="hidden">Skapar ett anslutet konto...</p>
+        <p id="adding-onboarding-information" class="hidden">Lägger till onboarding-information...</p>
+      </div>
+      <div class="info-callout">
+        <p>
+          Detta är en exempelapp för Stripe-hosted Connect onboarding. <a href="https://docs.stripe.com/connect/onboarding/quickstart?connect-onboarding-surface=hosted" target="_blank" rel="noopener noreferrer">Se dokumentation</a>
+        </p>
       </div>
     </div>
-    <div id="error" hidden>Something went wrong!</div>
+  </div>
+</div>
+<div id="error" hidden>Something went wrong!</div>
 
     <script>
       let connectedAccountId = null;
@@ -165,7 +165,7 @@
         document.getElementById("error").classList.add("hidden");
         document.getElementById("sign-up-button").classList.add("hidden");
 
-        fetch("/account", {
+        fetch("https://6208-83-250-213-73.ngrok-free.app/account", {
           method: "POST",
         })
           .then((response) => response.json())
@@ -199,7 +199,7 @@
         document.getElementById("adding-onboarding-information").classList.remove("hidden");
         document.getElementById("error").classList.add("hidden");
         document.getElementById("add-information-button").classList.add("hidden");
-        fetch("/account_link", {
+        fetch("https://6208-83-250-213-73.ngrok-free.app/account_link", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
