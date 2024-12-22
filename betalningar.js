@@ -7,12 +7,12 @@ signUpButton.onclick = async () => {
   document.getElementById("error").classList.add("hidden");
   document.getElementById("sign-up-button").classList.add("hidden");
 
-  fetch("/account", {
+  fetch("https://d918-83-250-213-73.ngrok-free.app/account", {
     method: "POST",
   })
     .then((response) => response.json())
     .then((json) => {
-      const {account, error} = json;
+      const { account, error } = json;
 
       if (error) {
         document.getElementById("error").classList.remove("hidden");
@@ -41,7 +41,8 @@ const createAccountLinkAndRedirect = async () => {
   document.getElementById("adding-onboarding-information").classList.remove("hidden");
   document.getElementById("error").classList.add("hidden");
   document.getElementById("add-information-button").classList.add("hidden");
-  fetch("/account_link", {
+
+  fetch("https://d918-83-250-213-73.ngrok-free.app/account_link", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -52,7 +53,7 @@ const createAccountLinkAndRedirect = async () => {
   })
     .then((response) => response.json())
     .then((json) => {
-      const {url, error} = json;
+      const { url, error } = json;
 
       if (error) {
         document.getElementById("error").classList.remove("hidden");
