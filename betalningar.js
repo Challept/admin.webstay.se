@@ -7,12 +7,12 @@ signUpButton.onclick = async () => {
   document.getElementById("error").classList.add("hidden");
   document.getElementById("sign-up-button").classList.add("hidden");
 
-  fetch("https://d918-83-250-213-73.ngrok-free.app/account", {
+  fetch("/account", {
     method: "POST",
   })
     .then((response) => response.json())
     .then((json) => {
-      const { account, error } = json;
+      const {account, error} = json;
 
       if (error) {
         document.getElementById("error").classList.remove("hidden");
@@ -37,49 +37,27 @@ signUpButton.onclick = async () => {
     });
 };
 
-const createAccountLinkAndRedirect = async () => {
+const addInformationButton = document.getElementById("add-information-button");
+addInformationButton.onclick = async () => {
   document.getElementById("adding-onboarding-information").classList.remove("hidden");
   document.getElementById("error").classList.add("hidden");
   document.getElementById("add-information-button").classList.add("hidden");
-
-  fetch("https://d918-83-250-213-73.ngrok-free.app/account_link", {
+  fetch(`/account/${connectedAccountId}`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      account: connectedAccountId,
-    }),
   })
     .then((response) => response.json())
     .then((json) => {
-      const { url, error } = json;
+      const {error} = json;
 
       if (error) {
         document.getElementById("error").classList.remove("hidden");
+        document.getElementById("adding-onboarding-information").classList.add("hidden");
         document.getElementById("add-information-button").classList.remove("hidden");
         return;
       }
 
+      document.getElementById("example-form").classList.remove("hidden");
+      document.getElementById("onboarding-has-begun").classList.remove("hidden");
       document.getElementById("adding-onboarding-information").classList.add("hidden");
-      window.location.href = url;
     });
 };
-
-const addInformationButton = document.getElementById("add-information-button");
-addInformationButton.onclick = createAccountLinkAndRedirect;
-
-const path = window.location.pathname;
-const parts = path.split("/");
-const route = parts[1];
-
-if (route === "return") {
-  document.getElementById("title").classList.add("hidden");
-  document.getElementById("subtitle").classList.add("hidden");
-  document.getElementById("sign-up-button").classList.add("hidden");
-  document.getElementById("details-submitted-title").classList.remove("hidden");
-  document.getElementById("details-submitted-subtitle").classList.remove("hidden");
-} else if (route === "refresh") {
-  connectedAccountId = parts[2];
-  createAccountLinkAndRedirect(connectedAccountId);
-}
